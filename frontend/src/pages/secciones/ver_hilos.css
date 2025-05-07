@@ -1,82 +1,71 @@
-
-
-.galeria {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* Estilo general */
+.contenedor {
+  padding: 2rem;
+  background-color: #121212; /* Fondo oscuro */
+  color: #e0e0e0; /* Texto claro */
 }
 
+/* Estilo para la galería de imágenes */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Tamaño más pequeño del grid */
+  gap: 1rem; /* Reducir el espacio entre elementos */
+  justify-items: center;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Estilo para cada item en la galería */
 .item {
-  background: #1e1e1e;
+  background: #2a2a2a; /* Fondo oscuro para cada item */
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  position: relative; /* Para posicionar el ícono dentro de este contenedor */
+}
+
+.item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4); 
 }
 
 .item img {
-  max-width: 150px;
-  display: block;
-  margin-bottom: 0.5rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
 
-.preview {
-  max-width: 150px;
-  margin: 1rem 0;
-}
-
-.mensaje-exito {
-  color: #4caf50;
-}
-
-.mensaje-error {
-  color: #f44336;
-}
-
-.boton-flotante {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  font-size: 24px;
-  padding: 10px 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-contenido {
-  background-color: #222;
-  padding: 2rem;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.modal-contenido input {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  width: 90%;
-  background-color: #333;
-  border: 1px solid #555;
-  color: white;
-}
-
-.modal-botones {
+.item p {
+  color: #bbb;
+  font-size: 14px;
   margin-top: 1rem;
 }
 
-.modal-botones button {
-  margin: 0 0.5rem;
-  padding: 0.5rem 1rem;
+/* Estilo para el ícono de copiar */
+.copiar {
+  position: absolute;
+  top: 5px;
+  right: 0px;
+  background-color: transparent; /* Sin fondo */
+  color: #858585; /* Color gris claro para el ícono */
+  border: none;
+  font-size: 18px; /* Ícono pequeño */
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+  z-index: 1; /* Asegura que el ícono esté sobre los demás elementos */
+}
+
+.copiar:hover {
+  transform: scale(1.1);
+  color: #5e5e5e; /* Cambiar el color del ícono cuando pase el mouse */
+}
+
+/* Estilo para el mensaje de error */
+.mensaje-error {
+  color: #f44336; /* Rojo para el error */
+  font-weight: bold;
+  margin-top: 1.2rem;
+  font-size: 16px;
 }
