@@ -5,7 +5,7 @@ const path = require("path");
 const conectarDB = require("./database/conexion");
 const pedidosRoutes = require("./routes/r_pedidos");
 const uploadRoutes = require("./routes/r_upload"); // nueva ruta
-
+const fs = require('fs');
 const app = express();
 
 // Conectar a la base de datos
@@ -16,6 +16,20 @@ app.use(express.json());
 
 // Hacer pública la carpeta uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+
+// Listar imágenes
+app.get('/uploads', (req, res) => {
+  const dir = path.join(__dirname, 'uploads');
+  if (!fs.existsSync(dir)) return res.json([]);
+
+  const archivos = fs.readdirSync(dir);
+  const imagenes = archivos
+    .filter(nombre => nombre.endsWith('.png'))
+    .map(nombre => ({ url: `/uploads/${nombre}`, nombre }));
+
+  res.json(imagenes);
+});
 
 // Rutas API
 app.use("/api", pedidosRoutes);
