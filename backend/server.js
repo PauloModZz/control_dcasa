@@ -17,8 +17,7 @@ app.use(express.json());
 // Hacer pública la carpeta uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
-// Listar imágenes
+// Listar imágenes con metadatos
 app.get('/uploads', (req, res) => {
   const dir = path.join(__dirname, 'uploads');
   if (!fs.existsSync(dir)) return res.json([]);
@@ -26,7 +25,20 @@ app.get('/uploads', (req, res) => {
   const archivos = fs.readdirSync(dir);
   const imagenes = archivos
     .filter(nombre => nombre.endsWith('.png'))
-    .map(nombre => ({ url: `/uploads/${nombre}`, nombre }));
+    .map(nombre => {
+      const jsonPath = path.join(dir, nombre + '.json');
+      let metadata = {};
+
+      if (fs.existsSync(jsonPath)) {
+        metadata = JSON.parse(fs.readFileSync(jsonPath));
+      }
+
+      return {
+        url: `/uploads/${nombre}`,
+        nombre,
+        ...metadata
+      };
+    });
 
   res.json(imagenes);
 });

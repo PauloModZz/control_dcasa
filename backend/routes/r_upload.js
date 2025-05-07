@@ -46,7 +46,7 @@ router.post("/", upload.single("imagen"), (req, res) => {
     return res.status(400).json({ error: 'Faltan datos del hilo: color, código o marca' });
   }
 
-  // Guardar los metadatos en un archivo JSON simple (opcional)
+  // Guardar los metadatos en un archivo JSON
   const metadata = {
     archivo: req.file.filename,
     color,
@@ -62,7 +62,7 @@ router.post("/", upload.single("imagen"), (req, res) => {
   res.json({ url, metadata });
 });
 
-// Eliminar imagen
+// Ruta para eliminar imagen y metadatos
 router.delete('/:filename', (req, res) => {
   const filename = req.params.filename;
   const filepath = path.join(storageDir, filename);
@@ -72,6 +72,29 @@ router.delete('/:filename', (req, res) => {
   if (fs.existsSync(jsonpath)) fs.unlinkSync(jsonpath);
 
   res.json({ mensaje: 'Imagen (y metadatos) eliminados correctamente' });
+});
+
+// Ruta para obtener la lista de imágenes con sus metadatos
+router.get("/", (req, res) => {
+  const archivos = fs.readdirSync(storageDir);
+  const imagenes = archivos.filter(f => f.endsWith('.png'));
+
+  const datos = imagenes.map(nombre => {
+    const jsonPath = path.join(storageDir, nombre + '.json');
+    let metadata = {};
+
+    if (fs.existsSync(jsonPath)) {
+      metadata = JSON.parse(fs.readFileSync(jsonPath));
+    }
+
+    return {
+      url: `/uploads/${nombre}`,
+      nombre,
+      ...metadata
+    };
+  });
+
+  res.json(datos);
 });
 
 module.exports = router;
