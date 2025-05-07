@@ -42,4 +42,17 @@ router.post("/", upload.single("imagen"), (req, res) => {
   res.json({ url });
 });
 
+// Eliminar imagen
+router.delete('/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filepath = path.join(__dirname, '..', 'uploads', filename);
+  
+    if (fs.existsSync(filepath)) {
+      fs.unlinkSync(filepath);
+      res.json({ mensaje: 'Imagen eliminada correctamente' });
+    } else {
+      res.status(404).json({ error: 'Imagen no encontrada' });
+    }
+  });
+  
 module.exports = router;
