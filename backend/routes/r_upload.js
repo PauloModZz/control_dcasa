@@ -7,14 +7,20 @@ const router = express.Router();
 
 // Crear carpeta si no existe
 const storageDir = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(storageDir)) fs.mkdirSync(storageDir);
+
+// Verificar si la carpeta 'uploads' existe, si no, crearla
+if (!fs.existsSync(storageDir)) {
+  console.log("La carpeta 'uploads' no existe. Creándola...");
+  fs.mkdirSync(storageDir, { recursive: true });  // Asegúrate de crearla si no existe
+}
 
 // Configuración del almacenamiento
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, storageDir);
+    cb(null, storageDir);  // Usamos el directorio 'uploads'
   },
   filename: function (req, file, cb) {
+    // Nombre de archivo único basado en el timestamp
     const nombre = Date.now() + path.extname(file.originalname).toLowerCase();
     cb(null, nombre);
   }
@@ -36,6 +42,7 @@ const upload = multer({ storage, fileFilter });
 
 // Ruta para subir imagen + datos adicionales
 router.post("/", upload.single("imagen"), (req, res) => {
+  console.log("Archivo recibido:", req.file);  // Para ver si el archivo fue recibido
   if (!req.file) {
     return res.status(400).json({ error: 'No se subió ningún archivo o el formato no es válido' });
   }
@@ -68,8 +75,15 @@ router.delete('/:filename', (req, res) => {
   const filepath = path.join(storageDir, filename);
   const jsonpath = path.join(storageDir, filename + '.json');
 
-  if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
-  if (fs.existsSync(jsonpath)) fs.unlinkSync(jsonpath);
+  if (fs.existsSync(filepath)) {
+    fs.unlinkSync(filepath);  // Eliminar imagen
+    console.log("Imagen eliminada:", filepath);
+  }
+
+  if (fs.existsSync(jsonpath)) {
+    fs.unlinkSync(jsonpath);  // Eliminar archivo JSON
+    console.log("Metadatos eliminados:", jsonpath);
+  }
 
   res.json({ mensaje: 'Imagen (y metadatos) eliminados correctamente' });
 });
