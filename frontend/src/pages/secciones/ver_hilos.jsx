@@ -5,6 +5,7 @@ import './ver_hilos.css';
 const VerHilos = () => {
   const [imagenes, setImagenes] = useState([]);
   const [mensajeError, setMensajeError] = useState('');
+  const [busqueda, setBusqueda] = useState(''); // Estado para almacenar el valor de búsqueda
 
   // Cargar el archivo JSON con los metadatos de las imágenes
   useEffect(() => {
@@ -35,15 +36,36 @@ const VerHilos = () => {
       .catch(err => alert('Error al copiar: ' + err));
   };
 
+  // Función para manejar la búsqueda
+  const manejarBusqueda = (e) => {
+    setBusqueda(e.target.value);
+  };
+
+  // Filtrar las imágenes por color, código o marca
+  const imagenesFiltradas = imagenes.filter((img) =>
+    img.color.toLowerCase().includes(busqueda.toLowerCase()) || 
+    img.codigo.includes(busqueda) || 
+    img.marca.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   return (
     <div className="contenedor">
       {mensajeError && <div className="mensaje-error">{mensajeError}</div>}
 
+      <div className="busqueda">
+        <input 
+          type="text" 
+          placeholder="Buscar por color, código o marca..." 
+          value={busqueda} 
+          onChange={manejarBusqueda} 
+        />
+      </div>
+
       <div className="galeria">
-        {imagenes.length === 0 ? (
-          <p>No hay imágenes disponibles</p>
+        {imagenesFiltradas.length === 0 ? (
+          <p>No hay imágenes disponibles para esa búsqueda</p>
         ) : (
-          imagenes.map((img, i) => (
+          imagenesFiltradas.map((img, i) => (
             <div key={i} className="item">
               <img src={img.url} alt={`img-${i}`} />
               <p><strong>Color:</strong> {img.color}</p>

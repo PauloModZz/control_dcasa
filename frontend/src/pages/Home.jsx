@@ -7,7 +7,8 @@ const VerPedidos = lazy(() => import('./secciones/ver_pedidos'));
 const NuevoPedido = lazy(() => import('./secciones/nuevo_pedido'));
 const AgregarItems = lazy(() => import('./secciones/agregar_items'));
 const Contabilidad = lazy(() => import('./secciones/contabilidad'));
-const VerHilos = lazy(() => import('./secciones/ver_hilos')); // Asegúrate de que esté importado correctamente
+const VerHilos = lazy(() => import('./secciones/ver_hilos'));
+const VerModelos = lazy(() => import('./secciones/ver_modelos')); // NUEVO: componente para ver modelos
 
 const Home = () => {
   const [seccion, setSeccion] = useState('ver_pedidos');
@@ -25,9 +26,9 @@ const Home = () => {
       case 'informacion':
         return <h2>Sección Información en desarrollo</h2>;
       case 'ver_hilos':
-        return <VerHilos />;  // Aquí debería renderizarse el componente VerHilos
+        return <VerHilos />;
       case 'ver_modelos':
-        return <h2>Sección Ver modelos en desarrollo</h2>;
+        return <VerModelos />; // CAMBIADO: ahora muestra el componente real
       case 'ver_telas':
         return <h2>Sección Ver telas en desarrollo</h2>;
       default:
