@@ -65,7 +65,9 @@ router.post("/", upload.single("imagen"), (req, res) => {
   const metadataPath = path.join(storageDir, req.file.filename + '.json');
   fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
 
-  const url = `/uploads/${req.file.filename}`;
+  // Ahora creamos la URL completa (basada en el entorno)
+  const baseUrl = process.env.BASE_URL || 'http://localhost:3000';  // Cambia esto por la URL de tu servidor en producción
+  const url = `${baseUrl}/uploads/${req.file.filename}`;
   res.json({ url, metadata });
 });
 
@@ -101,8 +103,9 @@ router.get("/", (req, res) => {
       metadata = JSON.parse(fs.readFileSync(jsonPath));
     }
 
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     return {
-      url: `/uploads/${nombre}`,
+      url: `${baseUrl}/uploads/${nombre}`,
       nombre,
       ...metadata
     };
