@@ -6,13 +6,16 @@ const itemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  categoria: {
-    type: String,
-    enum: ['individual', 'porta vasos', 'porta platos', 'servilletas', 'cocteleras', 'toallas'],
-    required: true,
-  },
   modelo: {
     type: String,
+    required: true,
+  },
+  precioUnitario: {
+    type: Number,
+    required: true,
+  },
+  total: {
+    type: Number,
     required: true,
   },
   marcaHilo: {
@@ -44,7 +47,14 @@ const pedidoSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  items: [itemSchema], // 🔥 Múltiples ítems por pedido
+  items: {
+    type: [itemSchema],
+    required: true,
+  },
+  totalPedido: {
+    type: Number,
+    required: true,
+  },
   estado: {
     type: String,
     enum: ['en proceso', 'terminado', 'entregado', 'cancelado'],
@@ -54,6 +64,12 @@ const pedidoSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   }
+});
+
+// Middleware para calcular totalPedido automáticamente
+pedidoSchema.pre('validate', function (next) {
+  this.totalPedido = this.items.reduce((sum, item) => sum + item.total, 0);
+  next();
 });
 
 const Pedido = mongoose.model('Pedido', pedidoSchema);

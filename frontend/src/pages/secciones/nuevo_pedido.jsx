@@ -62,6 +62,33 @@ const NuevoPedido = () => {
     setMensaje('✅ Ítem agregado al pedido.');
   };
 
+  const guardarPedidoCompleto = async () => {
+    if (itemsPedido.length === 0) {
+      setMensaje('❌ Agrega al menos un ítem antes de guardar el pedido.');
+      return;
+    }
+
+    try {
+      const res = await fetch('https://dcasa.onrender.com/api/pedidos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: itemsPedido,
+          notas: pedido.notas
+        })
+      });
+
+      if (!res.ok) throw new Error((await res.json()).mensaje || 'Error al guardar pedido');
+
+      const data = await res.json();
+      setMensaje(`✅ Pedido #${data.numeroPedido} guardado con éxito.`);
+      setItemsPedido([]);
+      setPedido({ cantidad: '', categoria: 'individual', notas: '', hiloSeleccionado: null, modeloSeleccionado: null, materialSeleccionado: null });
+    } catch (error) {
+      setMensaje(`❌ Error: ${error.message}`);
+    }
+  };
+
   return (
     <div className="contenedor-principal">
       <div className="card-formulario">
@@ -92,11 +119,27 @@ const NuevoPedido = () => {
           </button>
           <label>Notas:</label>
           <textarea name="notas" value={pedido.notas} onChange={handleChange} className="textarea-notas" />
-          <button type="submit">Agregar al pedido existente</button>
+          <button type="submit">Agregar al pedido</button>
+          <button type="button" onClick={guardarPedidoCompleto}>Guardar Pedido Completo</button>
           {mensaje && <p className="mensaje">{mensaje}</p>}
         </form>
       </div>
 
+      {/* 🟨 AHORA EL RESUMEN VA EN EL CENTRO */}
+      {itemsPedido.length > 0 && (
+        <div className="card-panel">
+          <h2>Items del Pedido</h2>
+          <ul>
+            {itemsPedido.map((item, index) => (
+              <li key={index}>
+                {item.cantidad}x {item.categoria} | {item.colorHilo} ({item.codigoHilo}) - {item.modelo} - {item.material}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 🟥 EL PANEL DE SELECCIÓN VA A LA DERECHA */}
       {mostrarPanel && (
         <div className="card-panel">
           {mostrarPanel === 'hilo' && (
@@ -130,19 +173,6 @@ const NuevoPedido = () => {
           {mostrarPanel === 'material' && (
             <VerMaterial onSeleccionar={handleSeleccionMaterial} />
           )}
-        </div>
-      )}
-
-      {itemsPedido.length > 0 && (
-        <div className="card-panel">
-          <h2>Items del Pedido</h2>
-          <ul>
-            {itemsPedido.map((item, index) => (
-              <li key={index}>
-                {item.cantidad}x {item.categoria} | {item.colorHilo} ({item.codigoHilo}) - {item.modelo} - {item.material}
-              </li>
-            ))}
-          </ul>
         </div>
       )}
     </div>
