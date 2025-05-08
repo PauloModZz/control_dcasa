@@ -1,0 +1,176 @@
+/* CONTENEDOR GENERAL */
+.contenedor-principal {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+/* TARJETAS */
+.card-formulario,
+.card-panel {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: 400px;
+  box-shadow: 0 0 10px #00000040;
+}
+
+.card-formulario {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* FORMULARIO */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* INPUTS, SELECTS, TEXTAREAS Y BOTONES UNIFICADOS */
+.formulario input,
+.formulario select,
+.formulario textarea,
+.boton-seleccion {
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  width: 100%;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+/* Input cantidad alineado a la izquierda */
+.input-cantidad {
+  text-align: left;
+}
+
+/* Textarea que crece */
+.textarea-notas {
+  resize: none;
+  overflow: hidden;
+  min-height: 2.5rem;
+  line-height: 1.4rem;
+}
+
+/* Botones de selección */
+.boton-seleccion {
+  text-align: left;
+  cursor: pointer;
+  background-color: #3a3a3a;
+  border: 1px solid #444;
+}
+
+.boton-seleccion:hover {
+  background-color: #555;
+}
+
+/* Botón de envío */
+.formulario button[type="submit"] {
+  background-color: #2c2c2c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.formulario button[type="submit"]:hover {
+  background-color: #444;
+}
+
+/* Info seleccionada */
+.info-text {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+/* Mensaje */
+.mensaje {
+  margin-top: 0.8rem;
+  color: #90ee90;
+  font-weight: bold;
+}
+
+/* Panel derecho */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Tarjetas de selección */
+.card {
+  background-color: #222;
+  border: 1px solid #444;
+  border-radius: 6px;
+  text-align: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background-color: #333;
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  margin: 0.2rem 0;
+  font-size: 0.8rem;
+}
+
+/* 🔥 MODO NOCTURNO TOTAL 🔥 */
+/* Elimina flechas en input tipo number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Elimina borde blanco al enfocar */
+.formulario input:focus,
+.formulario select:focus,
+.formulario textarea:focus,
+.boton-seleccion:focus {
+  outline: none;
+  border: 1px solid #888;
+  box-shadow: none;
+}
+
+/* 🔽 Flecha negra para <select> */
+.formulario select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
+}

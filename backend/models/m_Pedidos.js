@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
 
-// Definir el esquema para los pedidos
-const pedidoSchema = new mongoose.Schema({
-  numeroPedido: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
+// Esquema para cada ítem del pedido
+const itemSchema = new mongoose.Schema({
   cantidad: {
     type: Number,
     required: true,
@@ -28,10 +23,28 @@ const pedidoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  colorHilo: {
+    type: String,
+    required: true,
+  },
   material: {
     type: String,
     required: true,
   },
+  notas: {
+    type: String,
+    default: '',
+  }
+});
+
+// Esquema general del pedido
+const pedidoSchema = new mongoose.Schema({
+  numeroPedido: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+  items: [itemSchema], // 🔥 Múltiples ítems por pedido
   estado: {
     type: String,
     enum: ['en proceso', 'terminado', 'entregado', 'cancelado'],
@@ -40,13 +53,8 @@ const pedidoSchema = new mongoose.Schema({
   fechaCreacion: {
     type: Date,
     default: Date.now,
-  },
-  notas: {
-    type: String,
-    default: '',
-  },
+  }
 });
 
 const Pedido = mongoose.model('Pedido', pedidoSchema);
-
 module.exports = Pedido;

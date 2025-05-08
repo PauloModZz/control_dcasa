@@ -1,86 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { FaClipboard } from 'react-icons/fa'; // Importar el ícono de copiar
-import './ver_hilos.css';
+import BotonCopiar from './BotonCopiar.jsx';
+import '../styles/ver_estilos.css';
 
 const VerHilos = () => {
   const [imagenes, setImagenes] = useState([]);
-  const [mensajeError, setMensajeError] = useState('');
-  const [busqueda, setBusqueda] = useState(''); // Estado para almacenar el valor de búsqueda
+  const [busqueda, setBusqueda] = useState('');
 
-  // Cargar el archivo JSON con los metadatos de las imágenes
   useEffect(() => {
-    // Obtener el archivo JSON desde la carpeta public
-    fetch('/ver_hilos.json')
-      .then(res => res.json())
-      .then(data => {
-        const links = data.map(img => ({
-          url: `/imagenes/${img.nombre}`,
-          nombre: img.nombre,
-          color: img.color,
-          codigo: img.codigo,
-          marca: img.marca
-        }));
-        setImagenes(links);
-      })
-      .catch(err => {
-        console.error('Error al cargar el JSON de imágenes:', err);
-        setMensajeError('Hubo un error al cargar las imágenes.');
-      });
+    const obtenerDatos = async () => {
+      const res = await fetch('/ver_hilos.json');
+      const data = await res.json();
+      const links = data.map(({ nombre, color, codigo, marca }) => ({
+        url: `/imagenes/${nombre}`,
+        nombre,
+        color,
+        codigo,
+        marca
+      }));
+      setImagenes(links);
+    };
+    obtenerDatos();
   }, []);
 
-  // Función para copiar los datos al portapapeles
-  const copiarAlPortapapeles = (color, codigo, marca) => {
-    const texto = `Color: ${color}\nCódigo: ${codigo}\nMarca: ${marca}`;
-    navigator.clipboard.writeText(texto)
-      .then(() => alert('¡Datos copiados al portapapeles!'))
-      .catch(err => alert('Error al copiar: ' + err));
-  };
-
-  // Función para manejar la búsqueda
-  const manejarBusqueda = (e) => {
-    setBusqueda(e.target.value);
-  };
-
-  // Filtrar las imágenes por color, código o marca
-  const imagenesFiltradas = imagenes.filter((img) =>
-    img.color.toLowerCase().includes(busqueda.toLowerCase()) || 
-    img.codigo.includes(busqueda) || 
-    img.marca.toLowerCase().includes(busqueda.toLowerCase())
+  const imagenesFiltradas = imagenes.filter(({ color, codigo, marca }) =>
+    color.toLowerCase().includes(busqueda.toLowerCase()) || 
+    codigo.includes(busqueda) || 
+    marca.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
     <div className="contenedor">
-      {mensajeError && <div className="mensaje-error">{mensajeError}</div>}
-
       <div className="busqueda">
         <input 
           type="text" 
           placeholder="Buscar por color, código o marca..." 
           value={busqueda} 
-          onChange={manejarBusqueda} 
+          onChange={(e) => setBusqueda(e.target.value)} 
         />
       </div>
 
       <div className="galeria">
-        {imagenesFiltradas.length === 0 ? (
-          <p>No hay imágenes disponibles para esa búsqueda</p>
-        ) : (
-          imagenesFiltradas.map((img, i) => (
-            <div key={i} className="item">
-              <img src={img.url} alt={`img-${i}`} />
-              <p><strong>Color:</strong> {img.color}</p>
-              <p><strong>Código:</strong> {img.codigo}</p>
-              <p><strong>Marca:</strong> {img.marca}</p>
-
-              {/* Ícono de copiar */}
-              <button 
-                className="copiar" 
-                onClick={() => copiarAlPortapapeles(img.color, img.codigo, img.marca)}>
-                <FaClipboard />
-              </button>
+        {imagenesFiltradas.map(({ url, color, codigo, marca }, i) => (
+          <div key={i} className="item">
+            <div className="copiar-wrapper">
+              <BotonCopiar texto={`Color: ${color}\nCódigo: ${codigo}\nMarca: ${marca}`} />
             </div>
-          ))
-        )}
+            <img src={url} alt={`img-${i}`} />
+            <p><strong>Color:</strong> {color}</p>
+            <p><strong>Código:</strong> {codigo}</p>
+            <p><strong>Marca:</strong> {marca}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,60 +1,105 @@
 /* Global styles */
 body {
-    margin: 0;
-    background-color: #121212;
-    color: #fff;
-    font-family: sans-serif;
-    height: 100%; /* Asegura que el body ocupe toda la altura */
-  }
-  
-  /* Contenedor principal del dashboard */
-  .dashboard {
-    display: grid;
-    grid-template-columns: 220px 1fr; /* Sidebar tiene 220px de ancho y el contenido ocupa el resto */
-    height: 100vh; /* El contenedor ocupa toda la altura de la ventana */
-    width: 100%;
-  }
-  
-  /* Sidebar */
-  .sidebar {
-    background-color: #1f1f1f;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  
-  .sidebar .logo {
-    font-size: 24px;
-    margin-bottom: 30px;
-    text-align: center;
-    color: #ffffff;
-  }
-  
-  .sidebar button {
-    background-color: #2a2a2a;
-    border: none;
-    color: #ccc;
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    text-align: left;
-    font-size: 16px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .sidebar button:hover {
-    background-color: #3c3c3c;
-    color: #fff;
-    transform: translateX(4px);
-  }
-  
-  /* Contenido principal */
+  margin: 0;
+  background-color: #121212;
+  color: #fff;
+  font-family: sans-serif;
+  height: 100%;
+}
 
-  
-  /* Títulos de sección */
-  h2 {
-    color: #fff;
-  }
-  
+/* Contenedor principal del dashboard */
+.dashboard {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #1f1f1f;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.sidebar .logo {
+  font-size: 24px;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.sidebar button {
+  background-color: #2a2a2a;
+  border: none;
+  color: #ccc;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  text-align: left;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar button:hover {
+  background-color: #3c3c3c;
+  color: #fff;
+  transform: translateX(4px);
+}
+
+/* Contenido principal */
+.main-content {
+  position: relative;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Loader centrado en toda el área del contenido */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sidebar button {
+  background-color: #2a2a2a;
+  border: none;
+  color: #ccc;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  text-align: left;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  transform: translateX(0);
+}
+
+.sidebar button:hover {
+  background-color: #3c3c3c;
+  color: #fff;
+  transform: translateX(4px);
+}
+
+/* Estilo para el botón activo */
+.sidebar button.activo {
+  transform: translateX(10px);
+  background-color: #ffffffd7;
+  color: #121212;
+}
+
+/* Evita bordes y sombras al hacer focus o clic */
+.sidebar button:focus,
+.sidebar button:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}

@@ -1,10 +1,10 @@
-// src/secciones/ver_modelos.jsx
 import React, { useState, useEffect } from 'react';
-import { FaClipboard } from 'react-icons/fa';
-import './ver_hilos.css';
+import BotonCopiar from './BotonCopiar.jsx';
+import '../styles/ver_estilos.css';
+
 
 const VerModelos = () => {
-  const [imagenes, setImagenes] = useState([]);
+  const [modelos, setModelos] = useState([]);
   const [mensajeError, setMensajeError] = useState('');
   const [busqueda, setBusqueda] = useState('');
 
@@ -12,11 +12,11 @@ const VerModelos = () => {
     fetch('/ver_modelos.json')
       .then(res => res.json())
       .then(data => {
-        const links = data.map(img => ({    
-        url: `/imagenes/${img.nombre}`, // Correcto, como en ver_hilos.jsx
-          nombre: img.nombre
+        const links = data.map(modelo => ({
+          url: `/imagenes/${modelo.nombre_imagen}`,
+          nombre_modelo: modelo.nombre_modelo
         }));
-        setImagenes(links);
+        setModelos(links);
       })
       .catch(err => {
         console.error('Error al cargar el JSON de modelos:', err);
@@ -28,8 +28,8 @@ const VerModelos = () => {
     setBusqueda(e.target.value);
   };
 
-  const imagenesFiltradas = imagenes.filter((img) =>
-    img.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  const modelosFiltrados = modelos.filter((modelo) =>
+    modelo.nombre_modelo.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
@@ -39,20 +39,23 @@ const VerModelos = () => {
       <div className="busqueda">
         <input 
           type="text" 
-          placeholder="Buscar por nombre..." 
+          placeholder="Buscar modelo..." 
           value={busqueda} 
           onChange={manejarBusqueda} 
         />
       </div>
 
       <div className="galeria">
-        {imagenesFiltradas.length === 0 ? (
+        {modelosFiltrados.length === 0 ? (
           <p>No hay modelos disponibles para esa búsqueda</p>
         ) : (
-          imagenesFiltradas.map((img, i) => (
+          modelosFiltrados.map((modelo, i) => (
             <div key={i} className="item">
-              <img src={img.url} alt={`modelo-${i}`} />
-              <p><strong>Nombre:</strong> {img.nombre}</p>
+              <div className="copiar-wrapper">
+                <BotonCopiar texto={`Modelo: ${modelo.nombre_modelo}`} />
+              </div>
+              <img src={modelo.url} alt={`modelo-${i}`} />
+              <p><strong>Modelo:</strong> {modelo.nombre_modelo}</p>
             </div>
           ))
         )}
