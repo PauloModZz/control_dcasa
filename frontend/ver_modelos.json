@@ -1,7 +1,7 @@
 [
-    {
-      "nombre_imagen": "verde_militar.png",
-      "nombre_modelo": "verde militar"
-    }
-  ]
-  
+  {
+    "nombre_imagen": "verde_militar.png",
+    "nombre_modelo": "verde militar",
+    "precio": 2.00
+  }
+]

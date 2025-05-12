@@ -1,8 +1,9 @@
-/* Estilo general */
+/* Estilo general del contenido dentro del panel_derecho */
 .contenedor {
-  padding: 2rem;
-  background-color: #121212;
+  padding: 2rem 1rem;
   color: #e0e0e0;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* Estilo para la galería de imágenes */
@@ -10,10 +11,11 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
-  justify-items: center;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
+  justify-items: start; /* ✅ Alinea los ítems a la izquierda */
+  margin-top: 2rem;
+  width: 100%;
 }
+
 
 /* Estilo para cada item en la galería */
 .item {
@@ -24,6 +26,8 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
   position: relative;
+  width: 100%;
+  max-width: 200px;
 }
 
 .item:hover {
@@ -43,18 +47,21 @@
   margin-top: 1rem;
 }
 
-/* Estilo para el ícono de copiar */
-.copiar {
+/* Botón de copiar */
+.copiar-wrapper {
   position: absolute;
-  top: 5px;
-  right: 0px;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+.copiar {
   background-color: transparent;
   color: #858585;
   border: none;
   font-size: 18px;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s ease;
-  z-index: 1;
 }
 
 .copiar:hover {
@@ -69,7 +76,7 @@
   box-shadow: none;
 }
 
-/* Mensaje \"Copiado!\" pequeño debajo del botón copiar */
+/* Mensaje "Copiado!" */
 .mensaje-copiado {
   position: absolute;
   bottom: -15px;
@@ -86,7 +93,7 @@
   100% { opacity: 0; }
 }
 
-/* Estilo para el mensaje de error */
+/* Mensaje de error */
 .mensaje-error {
   color: #f44336;
   font-weight: bold;
@@ -94,7 +101,7 @@
   font-size: 16px;
 }
 
-/* Estilos de la barra de búsqueda */
+/* Buscador */
 .busqueda {
   margin-bottom: 20px;
 }
@@ -112,10 +119,4 @@
 .busqueda input:focus {
   outline: none;
   border: 1px solid #000000;
-}
-.copiar-wrapper {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
 }

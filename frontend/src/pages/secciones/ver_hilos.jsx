@@ -29,7 +29,7 @@ const VerHilos = () => {
   );
 
   return (
-    <div className="contenedor">
+    <>
       <div className="busqueda">
         <input 
           type="text" 
@@ -52,7 +52,7 @@ const VerHilos = () => {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

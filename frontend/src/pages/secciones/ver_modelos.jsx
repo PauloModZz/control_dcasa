@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import BotonCopiar from './BotonCopiar.jsx';
 import '../styles/ver_estilos.css';
 
-
 const VerModelos = () => {
   const [modelos, setModelos] = useState([]);
   const [mensajeError, setMensajeError] = useState('');
@@ -33,7 +32,7 @@ const VerModelos = () => {
   );
 
   return (
-    <div className="contenedor">
+    <>
       {mensajeError && <div className="mensaje-error">{mensajeError}</div>}
 
       <div className="busqueda">
@@ -60,7 +59,7 @@ const VerModelos = () => {
           ))
         )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -5,7 +5,6 @@ import './nuevo_pedido.css';
 const NuevoPedido = () => {
   const [pedido, setPedido] = useState({
     cantidad: '',
-    categoria: 'individual',
     notas: '',
     hiloSeleccionado: null,
     modeloSeleccionado: null,
@@ -19,8 +18,8 @@ const NuevoPedido = () => {
   const [itemsPedido, setItemsPedido] = useState([]);
 
   useEffect(() => {
-    fetch('/ver_hilos.json').then(res => res.json()).then(data => setHilosDisponibles(data));
-    fetch('/ver_modelos.json').then(res => res.json()).then(data => setModelosDisponibles(data));
+    fetch('/ver_hilos.json').then(res => res.json()).then(setHilosDisponibles);
+    fetch('/ver_modelos.json').then(res => res.json()).then(setModelosDisponibles);
   }, []);
 
   const handleChange = (e) => {
@@ -43,22 +42,36 @@ const NuevoPedido = () => {
   };
 
   const agregarItemAlPedido = () => {
-    if (!pedido.hiloSeleccionado || !pedido.modeloSeleccionado || !pedido.materialSeleccionado) {
+    const { cantidad, hiloSeleccionado, modeloSeleccionado, materialSeleccionado, notas } = pedido;
+
+    if (!hiloSeleccionado || !modeloSeleccionado || !materialSeleccionado) {
       setMensaje('❌ Selecciona hilo, modelo y material antes de agregar.');
       return;
     }
+
+    const cantidadNum = parseInt(cantidad);
+    if (isNaN(cantidadNum) || cantidadNum <= 0) {
+      setMensaje('❌ Ingresa una cantidad válida.');
+      return;
+    }
+
+    const precioUnitario = parseFloat(modeloSeleccionado.precio);
+    const total = precioUnitario * cantidadNum;
+
     const nuevoItem = {
-      cantidad: pedido.cantidad,
-      categoria: pedido.categoria,
-      notas: pedido.notas,
-      marcaHilo: pedido.hiloSeleccionado.marca,
-      codigoHilo: pedido.hiloSeleccionado.codigo,
-      colorHilo: pedido.hiloSeleccionado.color,
-      modelo: pedido.modeloSeleccionado.nombre_modelo,
-      material: pedido.materialSeleccionado.nombre_material
+      cantidad: cantidadNum,
+      modelo: modeloSeleccionado.nombre_modelo,
+      precioUnitario,
+      total,
+      marcaHilo: hiloSeleccionado.marca,
+      codigoHilo: hiloSeleccionado.codigo,
+      colorHilo: hiloSeleccionado.color,
+      material: materialSeleccionado.nombre_material,
+      notas
     };
+
     setItemsPedido(prev => [...prev, nuevoItem]);
-    setPedido({ cantidad: '', categoria: 'individual', notas: '', hiloSeleccionado: null, modeloSeleccionado: null, materialSeleccionado: null });
+    setPedido({ cantidad: '', notas: '', hiloSeleccionado: null, modeloSeleccionado: null, materialSeleccionado: null });
     setMensaje('✅ Ítem agregado al pedido.');
   };
 
@@ -72,10 +85,7 @@ const NuevoPedido = () => {
       const res = await fetch('https://dcasa.onrender.com/api/pedidos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: itemsPedido,
-          notas: pedido.notas
-        })
+        body: JSON.stringify({ items: itemsPedido })
       });
 
       if (!res.ok) throw new Error((await res.json()).mensaje || 'Error al guardar pedido');
@@ -83,63 +93,66 @@ const NuevoPedido = () => {
       const data = await res.json();
       setMensaje(`✅ Pedido #${data.numeroPedido} guardado con éxito.`);
       setItemsPedido([]);
-      setPedido({ cantidad: '', categoria: 'individual', notas: '', hiloSeleccionado: null, modeloSeleccionado: null, materialSeleccionado: null });
+      setPedido({ cantidad: '', notas: '', hiloSeleccionado: null, modeloSeleccionado: null, materialSeleccionado: null });
     } catch (error) {
       setMensaje(`❌ Error: ${error.message}`);
     }
   };
 
+  const totalGeneral = itemsPedido.reduce((acc, item) => acc + item.total, 0);
+
   return (
-    <div className="contenedor-principal">
+    <div className="panel_derecho">
+      {/* CARD FORMULARIO */}
       <div className="card-formulario">
         <form className="formulario" onSubmit={e => { e.preventDefault(); agregarItemAlPedido(); }}>
           <h2>Nuevo Pedido</h2>
           <label>Cantidad:</label>
           <input type="number" name="cantidad" value={pedido.cantidad} onChange={handleChange} required className="input-cantidad" />
-          <label>Categoría:</label>
-          <select name="categoria" value={pedido.categoria} onChange={handleChange} required>
-            <option value="individual">Individual</option>
-            <option value="porta vasos">Porta vasos</option>
-            <option value="porta platos">Porta platos</option>
-            <option value="servilletas">Servilletas</option>
-            <option value="cocteleras">Cocteleras</option>
-            <option value="toallas">Toallas</option>
-          </select>
+
           <label>Hilo:</label>
           <button type="button" className="boton-seleccion" onClick={() => setMostrarPanel('hilo')}>
             {pedido.hiloSeleccionado ? `✅ ${pedido.hiloSeleccionado.color} ${pedido.hiloSeleccionado.codigo} (${pedido.hiloSeleccionado.marca})` : 'Seleccionar hilo'}
           </button>
+
           <label>Modelo:</label>
           <button type="button" className="boton-seleccion" onClick={() => setMostrarPanel('modelo')}>
-            {pedido.modeloSeleccionado ? `✅ ${pedido.modeloSeleccionado.nombre_modelo}` : 'Seleccionar modelo'}
+            {pedido.modeloSeleccionado ? `✅ ${pedido.modeloSeleccionado.nombre_modelo} - $${pedido.modeloSeleccionado.precio}` : 'Seleccionar modelo'}
           </button>
+
           <label>Material:</label>
           <button type="button" className="boton-seleccion" onClick={() => setMostrarPanel('material')}>
             {pedido.materialSeleccionado ? `✅ ${pedido.materialSeleccionado.nombre_material}` : 'Seleccionar material'}
           </button>
+
           <label>Notas:</label>
           <textarea name="notas" value={pedido.notas} onChange={handleChange} className="textarea-notas" />
+
           <button type="submit">Agregar al pedido</button>
           <button type="button" onClick={guardarPedidoCompleto}>Guardar Pedido Completo</button>
           {mensaje && <p className="mensaje">{mensaje}</p>}
         </form>
       </div>
 
-      {/* 🟨 AHORA EL RESUMEN VA EN EL CENTRO */}
+      {/* CARD ITEMS DEL PEDIDO */}
       {itemsPedido.length > 0 && (
         <div className="card-panel">
-          <h2>Items del Pedido</h2>
-          <ul>
+          <h2>🧾 Items del Pedido</h2>
+          <div className="items-grid">
             {itemsPedido.map((item, index) => (
-              <li key={index}>
-                {item.cantidad}x {item.categoria} | {item.colorHilo} ({item.codigoHilo}) - {item.modelo} - {item.material}
-              </li>
+              <div key={index} className="item-box">
+                <p><strong>{item.cantidad}x</strong> {item.modelo} - {item.material}</p>
+                <p>Hilo: {item.colorHilo} ({item.codigoHilo}) - {item.marcaHilo}</p>
+                <p>Precio/U: ${item.precioUnitario.toFixed(2)} | Total: ${item.total.toFixed(2)}</p>
+                {item.notas && <p className="item-box-nota">📝 {item.notas}</p>}
+              </div>
             ))}
-          </ul>
+          </div>
+          <p className="total-general">💵 Total del Pedido: <strong>${totalGeneral.toFixed(2)}</strong></p>
         </div>
       )}
 
-      {/* 🟥 EL PANEL DE SELECCIÓN VA A LA DERECHA */}
+      {/* CARD PANEL DE SELECCIÓN */}
       {mostrarPanel && (
         <div className="card-panel">
           {mostrarPanel === 'hilo' && (
@@ -157,6 +170,7 @@ const NuevoPedido = () => {
               </div>
             </>
           )}
+
           {mostrarPanel === 'modelo' && (
             <>
               <h2>Selecciona un modelo</h2>
@@ -165,11 +179,13 @@ const NuevoPedido = () => {
                   <div key={index} className="card" onClick={() => handleSeleccionModelo(modelo)}>
                     <img src={`/imagenes/${modelo.nombre_imagen}`} height="80" />
                     <p>{modelo.nombre_modelo}</p>
+                    <p>${modelo.precio}</p>
                   </div>
                 ))}
               </div>
             </>
           )}
+
           {mostrarPanel === 'material' && (
             <VerMaterial onSeleccionar={handleSeleccionMaterial} />
           )}

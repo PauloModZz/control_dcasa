@@ -8,8 +8,6 @@ const AgregarItems = lazy(() => import('./secciones/agregar_items'));
 const Contabilidad = lazy(() => import('./secciones/contabilidad'));
 const VerHilos = lazy(() => import('./secciones/ver_hilos'));
 const VerModelos = lazy(() => import('./secciones/ver_modelos'));
-// VerMaterial importado pero sin botón en el menú
-const VerMaterial = lazy(() => import('./secciones/ver_material'));
 
 const Home = () => {
   const [seccion, setSeccion] = useState('ver_pedidos');
@@ -22,14 +20,13 @@ const Home = () => {
       case 'contabilidad': return <Contabilidad />;
       case 'ver_hilos': return <VerHilos />;
       case 'ver_modelos': return <VerModelos />;
-      case 'ver_material': return <VerMaterial />; // Se puede usar internamente si quieres
       default: return <h2>Sección no encontrada</h2>;
     }
   };
 
-  return ( 
-    <div className="dashboard">
-      <aside className="sidebar">
+  return (
+    <>
+      <aside className="panel_izquierdo">
         <h2 className="logo">D' Casa</h2>
         <button className={seccion === 'ver_pedidos' ? 'activo' : ''} onClick={() => setSeccion('ver_pedidos')}>📦 Ver pedidos</button>
         <button className={seccion === 'nuevo_pedido' ? 'activo' : ''} onClick={() => setSeccion('nuevo_pedido')}>➕ Nuevo pedido</button>
@@ -39,7 +36,7 @@ const Home = () => {
         <button className={seccion === 'ver_modelos' ? 'activo' : ''} onClick={() => setSeccion('ver_modelos')}>👗 Ver modelos</button>
       </aside>
 
-      <main className="main-content">
+      <section className="panel_derecho">
         <Suspense fallback={
           <div className="loader-container">
             <Loader />
@@ -47,8 +44,8 @@ const Home = () => {
         }>
           {renderSeccion()}
         </Suspense>
-      </main>
-    </div>
+      </section>
+    </>
   );
 };
 
